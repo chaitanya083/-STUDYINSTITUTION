@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>StudyInstitution Dashboard</title>
+  <link rel="stylesheet" href="/dashboard/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="/dashboard"><span class="brand-mark">SI</span><span>StudyInstitution</span></a>
+      <div class="sidebar-label">Workspace</div>
+      <nav id="nav" class="nav-list" aria-label="Dashboard sections"></nav>
+      <div class="sidebar-footer"><a href="/docs" target="_blank" rel="noreferrer">API documentation</a><span>v3.0.0</span></div>
+    </aside>
+    <main class="main-content">
+      <header class="topbar">
+        <div><p class="eyebrow">Institution operations</p><h1 id="page-title">Dashboard</h1></div>
+        <div class="topbar-actions"><span id="role-pill" class="role-pill">Signed out</span><button id="logout-button" class="button button-quiet hidden" type="button">Sign out</button></div>
+      </header>
+      <section id="login-view" class="login-view">
+        <div class="login-copy"><p class="eyebrow">Secure workspace</p><h2>One clear view of your institution.</h2><p>Sign in to see the data and actions available to your StudyInstitution role.</p></div>
+        <form id="login-form" class="login-form"><label for="username">Username or email</label><input id="username" name="username" autocomplete="username" required><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required><button class="button button-primary" type="submit">Open dashboard</button><p id="login-error" class="form-error" role="alert"></p></form>
+      </section>
+      <section id="dashboard-view" class="hidden">
+        <div id="notice" class="notice hidden" role="status"></div>
+        <div id="stat-grid" class="stat-grid"></div>
+        <section class="subscription-panel"><div class="panel-heading"><div><p class="eyebrow">Account health</p><h2>Subscription status</h2></div><strong id="subscription-status" class="subscription-status">-</strong></div><div class="progress-track"><span id="subscription-progress"></span></div></section>
+        <div class="dashboard-grid"><section class="panel panel-wide"><div class="panel-heading"><div><p class="eyebrow">Live records</p><h2 id="table-title">Overview</h2></div><button id="refresh-button" class="button button-quiet" type="button">Refresh</button></div><div id="table-wrap" class="table-wrap"></div></section><section class="panel"><div class="panel-heading"><div><p class="eyebrow">Your access</p><h2>Role scope</h2></div></div><div id="scope-list" class="scope-list"></div></section></div>
+      </section>
+    </main>
+  </div>
+  <script src="/dashboard/app.js"></script>
+</body>
+</html>
