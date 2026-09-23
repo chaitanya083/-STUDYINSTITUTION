@@ -1,0 +1,61 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0
+    container_name: studyinstitution-keycloak
+    command: start-dev --features=persistent-user-sessions
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+    ports:
+      - "8080:8080"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/8080 && echo -e 'GET /realms/master HTTP/1.1\\r\\nhost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && cat <&3 | grep -q '200 OK'"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+    restart: unless-stopped
+    networks:
+      - studyinstitution-net
+
+  backend:
+    build: .
+    container_name: studyinstitution-backend
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      KEYCLOAK_URL: http://keycloak:8080
+      DATABASE_URL: sqlite:///./data/studyinstitution.db
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - keycloak
+    restart: unless-stopped
+    networks:
+      - studyinstitution-net
+
+  keycloak-setup:
+    build: .
+    container_name: studyinstitution-keycloak-setup
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      KEYCLOAK_URL: http://keycloak:8080
+    entrypoint: ["python", "keycloak/keycloak_setup.py"]
+    depends_on:
+      - keycloak
+    networks:
+      - studyinstitution-net
+    restart: "no"
+
+volumes:
+  keycloak_data:
+
+networks:
+  studyinstitution-net:
+    driver: bridge
